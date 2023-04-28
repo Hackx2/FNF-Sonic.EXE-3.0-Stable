@@ -16,7 +16,6 @@ import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.transition.TransitionData;
 //import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.group.FlxGroup;
 import flixel.input.gamepad.FlxGamepad;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
@@ -41,9 +40,7 @@ class TitleState extends MusicBeatState
 	static var initialized:Bool = false;
 
 	var blackScreen:FlxSprite;
-	var credGroup:FlxGroup;
 	var credTextShit:Alphabet;
-	var textGroup:FlxGroup;
 	var logoSpr:FlxSprite;
 	var code:Int = 0;
 
@@ -145,7 +142,7 @@ class TitleState extends MusicBeatState
 		#elseif MENU
 		FlxTransitionableState.skipNextTransOut=true;
 		FlxTransitionableState.skipNextTransIn=true;
-		MusicBeatState.switchState(new EncoreState());
+		MusicBeatState.switchState(new MainMenuState());
 		#else
 
 			#if desktop
@@ -244,13 +241,6 @@ class TitleState extends MusicBeatState
 		// FlxTween.tween(logoBl, {y: logoBl.y + 50}, 0.6, {ease: FlxEase.quadInOut, type: PINGPONG});
 		// FlxTween.tween(logo, {y: logoBl.y + 50}, 0.6, {ease: FlxEase.quadInOut, type: PINGPONG, startDelay: 0.1});
 
-		credGroup = new FlxGroup();
-		add(credGroup);
-		textGroup = new FlxGroup();
-
-		blackScreen = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
-		credGroup.add(blackScreen);
-
 		credTextShit = new Alphabet(0, 0, "", true);
 		credTextShit.screenCenter();
 
@@ -273,7 +263,6 @@ class TitleState extends MusicBeatState
 				skipIntro();
 			});
 
-		// credGroup.add(credTextShit);
 	}
 
 	function getIntroTextShit():Array<Array<String>>
@@ -380,30 +369,14 @@ class TitleState extends MusicBeatState
 					});
 
 				transitioning = true;
-				// FlxG.sound.music.stop();
+	
 				new FlxTimer().start(4, function(tmr:FlxTimer)
 				{
 					remove(titleText); // incase someone turned flashing off
 					FlxG.sound.music.stop();
-					MusicBeatState.switchState(new EncoreState());
-					/*var video = new MP4Handler();
-					video.finishCallback = function()
-					{
-						MusicBeatState.switchState(new MainMenuState());
-					}
-					video.playVideo(Paths.video('bothCreditsAndIntro'));*/
+					MusicBeatState.switchState(new MainMenuState());
 				});
 
-		/*		new FlxTimer().start(1, function(tmr:FlxTimer)
-				{
-					if (mustUpdate) {
-						MusicBeatState.switchState(new OutdatedState());
-					} else {
-						MusicBeatState.switchState(new MainMenuState());
-					}
-					closedState = true;
-				});*/
-				// FlxG.sound.play(Paths.music('titleShoot'), 0.7);
 			}
 			else if (pressedEnter && !transitioning && skippedIntro && code == 4)
 				{
@@ -418,8 +391,6 @@ class TitleState extends MusicBeatState
 					FlxG.sound.play(Paths.sound('confirmMenu'));
 
 
-					//if (!FlxG.save.data.songArray.contains('milk') && !FlxG.save.data.botplay)
-				//		FlxG.save.data.songArray.push('milk');
 					new FlxTimer().start(1.5, function(tmr:FlxTimer)
 					{
 						LoadingState.loadAndSwitchState(new PlayState(), true);
@@ -428,11 +399,6 @@ class TitleState extends MusicBeatState
 
 				super.update(elapsed);
 		}
-
-		//if (pressedEnter && !skippedIntro)
-	//	{
-	//		skipIntro();
-	//	}
 
 		if(swagShader != null)
 		{
@@ -443,150 +409,24 @@ class TitleState extends MusicBeatState
 		super.update(elapsed);
 	}
 
-	function createCoolText(textArray:Array<String>, ?offset:Float = 0)
-	{
-		for (i in 0...textArray.length)
-		{
-			var money:Alphabet = new Alphabet(0, 0, textArray[i], true, false);
-			money.screenCenter(X);
-			money.y += (i * 60) + 200 + offset;
-			credGroup.add(money);
-			textGroup.add(money);
-		}
-	}
-
-	function addMoreText(text:String, ?offset:Float = 0)
-	{
-		if(textGroup != null) {
-			var coolText:Alphabet = new Alphabet(0, 0, text, true, false);
-			coolText.screenCenter(X);
-			coolText.y += (textGroup.length * 60) + 200 + offset;
-			credGroup.add(coolText);
-			textGroup.add(coolText);
-		}
-	}
-
-	function deleteCoolText()
-	{
-		while (textGroup.members.length > 0)
-		{
-			credGroup.remove(textGroup.members[0], true);
-			textGroup.remove(textGroup.members[0], true);
-		}
-	}
-
-	function playBoop1()
-		{
-			if (!skippedIntro)
-			{
-				FlxG.sound.play(Paths.sound('boop1', 'shared'));
-			}
-		}
-
-		function playBoop2()
-		{
-			if (!skippedIntro)
-			{
-				FlxG.sound.play(Paths.sound('boop2', 'shared'));
-			}
-		}
-
-		function playShow()
-		{
-			if (!skippedIntro)
-			{
-				FlxG.sound.play(Paths.sound('showMoment', 'shared'), .4);
-			}
-		}
-
-
-	private var sickBeats:Int = 0; //Basically curBeat but won't be skipped if you hold the tab or resize the screen
 	private static var closedState:Bool = false;
 	override function beatHit()
 	{
 		super.beatHit();
-
-	/*	if(logoBl != null)
-			logoBl.animation.play('bump');
-
-		if(gfDance != null) {
-			danceLeft = !danceLeft;
-
-			if (danceLeft)
-				gfDance.animation.play('danceRight');
-			else
-				gfDance.animation.play('danceLeft');
-		}
-
-		if(!closedState) {
-			sickBeats++;
-			switch (sickBeats)
-			{
-				case 1:
-					createCoolText(['Psych Engine by'], 45);
-				// credTextShit.visible = true;
-				case 3:
-					addMoreText('Shadow Mario', 45);
-					addMoreText('RiverOaken', 45);
-				// credTextShit.text += '\npresent...';
-				// credTextShit.addText();
-				case 4:
-					deleteCoolText();
-				// credTextShit.visible = false;
-				// credTextShit.text = 'In association \nwith';
-				// credTextShit.screenCenter();
-				case 5:
-					createCoolText(['This is a mod to'], -60);
-				case 7:
-					addMoreText('This game right below lol', -60);
-					logoSpr.visible = true;
-				// credTextShit.text += '\nNewgrounds';
-				case 8:
-					deleteCoolText();
-					logoSpr.visible = false;
-				// credTextShit.visible = false;
-
-				// credTextShit.text = 'Shoutouts Tom Fulp';
-				// credTextShit.screenCenter();
-				case 9:
-					createCoolText([curWacky[0]]);
-				// credTextShit.visible = true;
-				case 11:
-					addMoreText(curWacky[1]);
-				// credTextShit.text += '\nlmao';
-				case 12:
-					deleteCoolText();
-				// credTextShit.visible = false;
-				// credTextShit.text = "Friday";
-				// credTextShit.screenCenter();
-				case 13:
-					addMoreText('Friday');
-				// credTextShit.visible = true;
-				case 14:
-					addMoreText('Night');
-				// credTextShit.text += '\nNight';
-				case 15:
-					addMoreText('Funkin'); // credTextShit.text += '\nFunkin';
-
-				case 16:
-					skipIntro();
-			}
-		} */
 	}
 
 	var skippedIntro:Bool = false;
 
 	function skipIntro():Void
-	{
-		if (!skippedIntro)
 		{
-			remove(logoSpr);
-
-			FlxG.sound.play(Paths.sound('showMoment', 'shared'), .4);
-
-			FlxG.camera.flash(FlxColor.RED, 2);
-			remove(credGroup);
-			skippedIntro = true;
+			if (!skippedIntro)
+			{
+				remove(logoSpr);
+	
+				FlxG.sound.play(Paths.sound('showMoment', 'shared'), .4);
+	
+				FlxG.camera.flash(FlxColor.RED, 2);
+				skippedIntro = true;
+			}
 		}
-	}
 }
