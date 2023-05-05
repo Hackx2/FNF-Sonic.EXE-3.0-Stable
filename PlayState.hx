@@ -2200,17 +2200,17 @@ class PlayState extends MusicBeatState
 								startCountdown();
 								add(ready);
 								FlxTween.tween(ready.scale, {x: .9, y: .9}, Conductor.crochet / 500);
-								FlxG.sound.play(Paths.sound('ready', 'exe'));
+								FlxG.sound.play(Paths.sound('tailsSounds/ready', 'exe'));
 							case 1:
 								ready.visible = false;
 								add(set);
 								FlxTween.tween(set.scale, {x: .9, y: .9}, Conductor.crochet / 500);
-								FlxG.sound.play(Paths.sound('set', 'exe'));
+								FlxG.sound.play(Paths.sound('tailsSounds/set', 'exe'));
 							case 2:
 								set.visible = false;
 								add(go);
 								FlxTween.tween(go.scale, {x: 1.1, y: 1.1}, Conductor.crochet / 500);
-								FlxG.sound.play(Paths.sound('go', 'exe'));
+								FlxG.sound.play(Paths.sound('tailsSounds/go', 'exe'));
 							case 3:
 								go.visible = false;
 								canPause = true;

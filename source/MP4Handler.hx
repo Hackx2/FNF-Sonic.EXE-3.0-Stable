@@ -39,10 +39,7 @@ class MP4Handler extends vlc.VlcBitmap
 
 	function update(e:Event)
 	{
-		if ((FlxG.keys.justPressed.ENTER || FlxG.keys.justPressed.SPACE) && isPlaying
-		#if !debug
-		&& canSkip
-		#end)
+		if ((FlxG.keys.justPressed.ENTER || FlxG.keys.justPressed.SPACE) && isPlaying && canSkip)
 			finishVideo();
 
 		if (FlxG.sound.muted || FlxG.sound.volume <= 0)

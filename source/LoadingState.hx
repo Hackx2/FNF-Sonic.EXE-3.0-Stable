@@ -253,7 +253,8 @@ class LoadingState extends MusicBeatState
 			}
 		}).onError(function(_)
 		{
-			promise.error("There is no asset library with an ID of \"" + id + "\"");
+			//promise.error("There is no asset library with an ID of \"" + id + "\"");
+			trace("Hewwo!");
 		});
 
 		return promise.future;
